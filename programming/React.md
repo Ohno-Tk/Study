@@ -17,9 +17,12 @@
   * [StrictModeとは？](#contents11)
   * [jsとjsx](#contents12)
   * [props](#contents13)
-  * [state](#contents14)
-  * [再レンダリング(userEffect)](#contents15)
   * [ルーティングの基礎(React Router)](#contents16)
+* React Hooks
+  * [React Hooksとは？](#contents18)
+  * [usestate](#contents14)
+  * [再レンダリング(userEffect)](#contents15)
+  * [useRef](#contents19)
 * コンポーネント分割
   * [Atomic Design概要](#contents17)
   * ATOMS(原子)
@@ -34,6 +37,8 @@
 ](https://persolpt-eng.udemy.com/course/modern_javascipt_react_beginner/)
 * [Reactに入門した人のためのもっとReactが楽しくなるステップアップコース完全版
 ](https://persolpt-eng.udemy.com/course/react_stepup/)
+* [【完全保存版】React Hooksを完全に理解するHooksマスター講座【React18~19対応】](https://persolpt-eng.udemy.com/course/react-hooks-complete-course/)
+
 
 ## JavaScript基礎
 <a id="contents1"></a>
@@ -286,9 +291,67 @@ props.childrenにすると、messageが要らなくなる。
 };  
 ```
 
+<a id="contents16"></a>
+
+### ルーティングの基礎(React Router)
+[公式ページ](https://reactrouter.com/)
+
+```jsx:home
+export const App = () => {
+  return {
+    <div>
+      <h1>Homeページです</h1>
+    </div>
+  }
+```
+Page1、Page2も上記と似たように作る。
+
+```js:index
+import {BrowserRouter, Link, switch,Route} from "react-router-dom";
+
+import {Home} from "./Home";
+import {Page1} from "./Page1";
+import {Page2} from "./Page2";
+
+
+ export const App = () => {
+  return (
+  <BrowserRouter>
+    <React.Fragment>
+      <Link to="/">Home</Link><br />
+      <Link to="/Page1">Page1</Link><br />
+      <Link to="/Page2">Page2</Link>
+      <Page2 />
+    </React.Fragment>
+    ↓クリックしたリンクによって表示させるページを変化させる。
+    <Switch>
+      <Route exact path="/">
+        <Home />
+      </Route>
+      <Route path="/page1">
+        <Page1 />
+      </Route>
+      <Route path="/page2">
+        <Page2 />
+      </Route>
+    </Switch>
+  </BrowserRouter>
+  );
+};
+```
+* Routeにexactをつけることで、完全一致になる。
+
+## React Hooks
+
+<a id="contents18"></a>
+
+### React Hooksとは？
+状態管理などのReactの機能を、クラスを書かずに使えるようになる機能
+
+
 <a id="contents14"></a>
 
-### state
+### usestate
 それぞれのコンポーネントが持っている状態のこと。
 
 ```js:index
@@ -383,55 +446,33 @@ useEffectは、最初のレンダリング時と[]の変数に変更があった
 * propsが変更されたコンポーネント
 * 再レンダリングされたコンポーネントは以下の子要素
 
-<a id="contents16"></a>
+<a id="contents19"></a>
 
-### ルーティングの基礎(React Router)
-[公式ページ](https://reactrouter.com/)
-
-```jsx:home
-export const App = () => {
-  return {
-    <div>
-      <h1>Homeページです</h1>
-    </div>
-  }
-```
-Page1、Page2も上記と似たように作る。
+### useRef
+* Classコンポーネント時のref属性の代わりに、useRefを使って要素への参照ができる。
+* useRefでは、useStateのようにコンポーネント内での値を保持ができる。
+* DOMの要素に操作をしたい場合に使用される(アニメーションなど)
+* 書き方によっては無駄な再レンダリングを防ぐことができる。
 
 ```js:index
-import {BrowserRouter, Link, switch,Route} from "react-router-dom";
-
-import {Home} from "./Home";
-import {Page1} from "./Page1";
-import {Page2} from "./Page2";
-
-
- export const App = () => {
+const App = () => {
+  const inputEl = useRef(null);
+  const handleClick = () => {
+    inputEl.current.focus();
+    console.log("inputEl.current:", inputEl.current);
+    //inputEl.current: <input type="text">
+  };
   return (
-  <BrowserRouter>
-    <React.Fragment>
-      <Link to="/">Home</Link><br />
-      <Link to="/Page1">Page1</Link><br />
-      <Link to="/Page2">Page2</Link>
-      <Page2 />
-    </React.Fragment>
-    ↓クリックしたリンクによって表示させるページを変化させる。
-    <Switch>
-      <Route exact path="/">
-        <Home />
-      </Route>
-      <Route path="/page1">
-        <Page1 />
-      </Route>
-      <Route path="/page2">
-        <Page2 />
-      </Route>
-    </Switch>
-  </BrowserRouter>
+    <>
+      <input ref={inputEl} type="text" />
+      <button onClick={handleClick}>入力エリアをフォーカスする</button>
+    </>
   );
 };
 ```
-* Routeにexactをつけることで、完全一致になる。
+
+### useContext
+* どこのコンポーネントからでもデータへよりシンプルにアクセスできる。
 
 <a id="contents17"></a>
 
